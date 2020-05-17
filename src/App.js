@@ -42,7 +42,7 @@ const App = () => {
       informaciones.forEach((element) => {
         if (element[info.ticker]) {
           element[info.ticker].variacion =
-            Math.round(
+            -Math.round(
               ((element[info.ticker].ultimo - info.value) / 100) * 100 * 100
             ) / 100;
           element[info.ticker].ultimo = info.value;
@@ -118,16 +118,9 @@ const App = () => {
       setSell(aux_sell);
     });
   }, []);
-  data.forEach((element) => {
+  data.forEach(async (element) => {
     element.time = new Date(element.time);
-    element.time =
-      element.time.getFullYear() +
-      " " +
-      element.time.getHours() +
-      ":" +
-      element.time.getMinutes() +
-      ":" +
-      element.time.getSeconds();
+    element.time = element.time.toLocaleString("en-US");
     element[element.ticker] = element.value;
   });
   var lista_ticker = {};
