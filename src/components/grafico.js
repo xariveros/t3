@@ -78,7 +78,7 @@ const Grafico = ({ info, transado, buy, sell, extra, exchanges, stocks }) => {
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="time" />
-              <YAxis />
+              <YAxis domain={["auto", "auto"]} />
               <Tooltip />
               <Legend />
               <Line
