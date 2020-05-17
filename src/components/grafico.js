@@ -19,6 +19,7 @@ const Grafico = ({ info, transado, buy, sell, extra, exchanges, stocks }) => {
     });
   }
   var volumen_total = 0;
+  var nombre_ticker = [];
   for (const key in exchanges) {
     aux_exchanges.push(exchanges[key].exchange_ticker);
     listed_companies.forEach((element) => {
@@ -33,7 +34,11 @@ const Grafico = ({ info, transado, buy, sell, extra, exchanges, stocks }) => {
         stocks.forEach((stock) => {
           element[nombre_exchange].forEach((nombre_empresa) => {
             if (stock.company_name === nombre_empresa) {
-              //console.log(buy);
+              nombre_ticker.push([
+                stock.ticker,
+                stock.company_name,
+                stock.country,
+              ]);
               if (buy[0] && buy[0][stock.ticker]) {
                 info_exchanges[nombre_exchange].buy +=
                   buy[0][stock.ticker].transado;
@@ -85,6 +90,20 @@ const Grafico = ({ info, transado, buy, sell, extra, exchanges, stocks }) => {
             </LineChart>
             <div style={otroDivStyle}>
               <h3>Información relevante:</h3>
+              {nombre_ticker.map((dupla) => {
+                if (dupla[0] === info[0].ticker) {
+                  return (
+                    <div>
+                      <p>
+                        Nombre Compañia: <strong>{dupla[1]}</strong>
+                      </p>
+                      <p>
+                        País de Origen: <strong>{dupla[2]}</strong>
+                      </p>
+                    </div>
+                  );
+                }
+              })}
               {extra.map((dato) => {
                 if (dato[info[0].ticker]) {
                   return (

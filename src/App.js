@@ -187,10 +187,10 @@ const App = () => {
 };
 
 const style = {
-  margin: "10",
-  padding: 10,
-  listStyle: "none",
-  center: 1,
+  "margin-left": "300",
+  padding: 30,
+  color: "#FFFFFF",
+  "background-color": "#000000",
 };
 
 export default App;
