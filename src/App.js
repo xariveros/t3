@@ -16,26 +16,30 @@ socket.on("STOCKS", (info) => {
 });
 socket.emit("STOCKS", "oli");
 
+var exchanges = [];
+socket.on("EXCHANGES", (info) => {
+  exchanges = info;
+  console.log(exchanges);
+});
+socket.emit("EXCHANGES", "oli");
+
 const App = () => {
   const [data, setData] = useState([]);
-  //const [informaciones, setInformaciones] = useState([]);
   const [estadisticas, setEstadisticas] = useState([]);
   var informaciones = [{}];
   const [transados, setTransados] = useState([]);
   var aux_transados = [{}];
-  // var lista = [
-  //   {
-  //     twt: { max: 1, min: 2, transado: 3 },
-  //     fb: { max: 1, min: 2, transado: 3 },
-  //   },
-  // ];
+  var aux_transados2 = [{}];
+  const [transados2, setTransados2] = useState([]);
+  const [buy, setBuy] = useState([]);
+  var aux_buy = [{}];
+  const [sell, setSell] = useState([]);
+  var aux_sell = [{}];
 
   useEffect(() => {
     socket.on("UPDATE", (info) => {
       setData((currentData) => [...currentData, info]);
       informaciones.forEach((element) => {
-        //console.log("entro aki");
-        //element es objeto
         if (element[info.ticker]) {
           element[info.ticker].variacion =
             Math.round(
@@ -59,11 +63,10 @@ const App = () => {
         }
       });
       setEstadisticas(informaciones);
+      //console.log(informaciones);
     });
-    var aux = [];
-    //console.log(aux);
+
     socket.on("BUY", (info) => {
-      //console.log(info);
       aux_transados.forEach((element) => {
         if (element[info.ticker]) {
           element[info.ticker].transado += info.volume;
@@ -73,11 +76,48 @@ const App = () => {
           element[info.ticker].transado = info.volume;
         }
       });
+      aux_buy.forEach((element) => {
+        if (element[info.ticker]) {
+          element[info.ticker].transado += info.volume;
+        } else {
+          element[info.ticker] = {};
+          element[info.ticker].ticker = info.ticker;
+          element[info.ticker].transado = info.volume;
+        }
+      });
       setTransados(aux_transados);
+      setBuy(aux_buy);
+      //console.log(aux_buy);
     });
-    // socket.on("SELL", (info) => {});
-  }, []);
 
+    //var aux_transados2 = [];
+    socket.on("SELL", (info) => {
+      aux_transados2.forEach((element) => {
+        if (element[info.ticker]) {
+          element[info.ticker].transado += info.volume;
+        } else {
+          element[info.ticker] = {};
+          element[info.ticker].ticker = info.ticker;
+          element[info.ticker].transado = info.volume;
+        }
+      });
+      if (aux_transados[0][info.ticker]) {
+        aux_transados[0][info.ticker].transado += info.volume; //suma de buy total + sell de update
+      }
+      aux_sell.forEach((element) => {
+        if (element[info.ticker]) {
+          element[info.ticker].transado += info.volume;
+        } else {
+          element[info.ticker] = {};
+          element[info.ticker].ticker = info.ticker;
+          element[info.ticker].transado = info.volume;
+        }
+      });
+      setTransados2(aux_transados2);
+      setTransados(aux_transados);
+      setSell(aux_sell);
+    });
+  }, []);
   data.forEach((element) => {
     element.time = new Date(element.time);
     element.time = element.time.toGMTString();
@@ -129,7 +169,11 @@ const App = () => {
       <Grafico
         info={info_para_graficar}
         transado={transados}
+        buy={buy}
+        sell={sell}
         extra={estadisticas}
+        stocks={stocks}
+        exchanges={exchanges}
       />
     </div>
   );
