@@ -120,7 +120,14 @@ const App = () => {
   }, []);
   data.forEach((element) => {
     element.time = new Date(element.time);
-    element.time = element.time.toGMTString();
+    element.time =
+      element.time.getFullYear() +
+      " " +
+      element.time.getHours() +
+      ":" +
+      element.time.getMinutes() +
+      ":" +
+      element.time.getSeconds();
     element[element.ticker] = element.value;
   });
   var lista_ticker = {};

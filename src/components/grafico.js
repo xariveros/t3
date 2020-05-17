@@ -10,15 +10,10 @@ import {
 } from "recharts";
 
 const Grafico = ({ info, transado, buy, sell, extra, exchanges, stocks }) => {
-  //console.log(buy);
-  // console.log(sell);
-  //console.log(exchanges);
-  //console.log(stocks);
   var listed_companies = [];
   var info_exchanges = [];
   var aux_exchanges = [];
   for (const key in exchanges) {
-    //listed_companies = [...listed_companies, exchanges[key].listed_companies];
     listed_companies.push({
       [exchanges[key].exchange_ticker]: exchanges[key].listed_companies,
     });
@@ -26,10 +21,8 @@ const Grafico = ({ info, transado, buy, sell, extra, exchanges, stocks }) => {
   var volumen_total = 0;
   for (const key in exchanges) {
     aux_exchanges.push(exchanges[key].exchange_ticker);
-
     listed_companies.forEach((element) => {
       var nombre_exchange = exchanges[key].exchange_ticker;
-
       if (element[nombre_exchange]) {
         info_exchanges[nombre_exchange] = {};
         info_exchanges[nombre_exchange].cantidad_acciones =
@@ -61,9 +54,6 @@ const Grafico = ({ info, transado, buy, sell, extra, exchanges, stocks }) => {
       }
     });
   }
-  //console.log(aux_exchanges);
-  //console.log(listed_companies);
-  //setInfo_para_exchanges(info_exchanges);
   return (
     <div>
       {info.map((info) => (
@@ -71,8 +61,8 @@ const Grafico = ({ info, transado, buy, sell, extra, exchanges, stocks }) => {
           <h1 style={titleStyle}>{info[0].ticker}</h1>
           <div style={divStyle}>
             <LineChart
-              width={500}
-              height={300}
+              width={750}
+              height={450}
               data={info}
               margin={{
                 top: 5,
@@ -93,34 +83,50 @@ const Grafico = ({ info, transado, buy, sell, extra, exchanges, stocks }) => {
                 activeDot={{ r: 8 }}
               />
             </LineChart>
-            {extra.map((dato) => {
-              if (dato[info[0].ticker]) {
-                return (
-                  <div
-                    key={Math.random()}
-                    display="flex"
-                    flex-direction="row"
-                    flex-wrap="wrap"
-                  >
-                    <p>Precio más alto: {dato[info[0].ticker].alto}</p>
-                    <p>Precio más bajo: {dato[info[0].ticker].bajo}</p>
-                    <p>Último precio: {dato[info[0].ticker].ultimo}</p>
-                    <p>
-                      Variación porcentual: {dato[info[0].ticker].variacion}%
-                    </p>
-                  </div>
-                );
-              }
-            })}
-            {transado.map((dato) => {
-              if (dato[info[0].ticker]) {
-                return (
-                  <div>
-                    <p>Volumen transado: {dato[info[0].ticker].transado}</p>
-                  </div>
-                );
-              }
-            })}
+            <div style={otroDivStyle}>
+              <h3>Información relevante:</h3>
+              {extra.map((dato) => {
+                if (dato[info[0].ticker]) {
+                  return (
+                    <div
+                      key={Math.random()}
+                      display="flex"
+                      flex-direction="row"
+                      flex-wrap="wrap"
+                    >
+                      <p>
+                        Precio más alto:{" "}
+                        <strong>{dato[info[0].ticker].alto}</strong>
+                      </p>
+                      <p>
+                        Precio más bajo:{" "}
+                        <strong>{dato[info[0].ticker].bajo}</strong>
+                      </p>
+                      <p>
+                        Último precio:{" "}
+                        <strong>{dato[info[0].ticker].ultimo}</strong>
+                      </p>
+                      <p>
+                        Variación porcentual:{" "}
+                        <strong>{dato[info[0].ticker].variacion}%</strong>
+                      </p>
+                    </div>
+                  );
+                }
+              })}
+              {transado.map((dato) => {
+                if (dato[info[0].ticker]) {
+                  return (
+                    <div>
+                      <p>
+                        Volumen transado:{" "}
+                        <strong>{dato[info[0].ticker].transado}</strong>
+                      </p>
+                    </div>
+                  );
+                }
+              })}
+            </div>
           </div>
         </div>
       ))}
@@ -132,19 +138,22 @@ const Grafico = ({ info, transado, buy, sell, extra, exchanges, stocks }) => {
                 <h1 style={titleStyle}>
                   <p>Exchange: {info_exchanges[dato].nombre}</p>
                 </h1>
-                <p>Suma Buy: {info_exchanges[dato].buy}</p>
-                <p>Suma Sell: {info_exchanges[dato].sell}</p>
-                <p>Volumen Total: {info_exchanges[dato].total}</p>
-                <p>
-                  Cantidad de acciones: {info_exchanges[dato].cantidad_acciones}
-                </p>
-                <p>
-                  Participación{" "}
-                  {Math.round(
-                    (info_exchanges[dato].total / volumen_total) * 10000
-                  ) / 100}
-                  %
-                </p>
+                <center>
+                  <p>Suma Buy: {info_exchanges[dato].buy}</p>
+                  <p>Suma Sell: {info_exchanges[dato].sell}</p>
+                  <p>Volumen Total: {info_exchanges[dato].total}</p>
+                  <p>
+                    Cantidad de acciones:{" "}
+                    {info_exchanges[dato].cantidad_acciones}
+                  </p>
+                  <p>
+                    Participación{" "}
+                    {Math.round(
+                      (info_exchanges[dato].total / volumen_total) * 10000
+                    ) / 100}
+                    %
+                  </p>
+                </center>
               </div>
             );
           }
@@ -159,11 +168,13 @@ const divStyle = {
 };
 
 const otroDivStyle = {
+  "border-style": "solid",
   padding: 50,
+  margin: 10,
 };
 
 const titleStyle = {
-  padding: 30,
+  padding: 20,
 };
 
 export default Grafico;
